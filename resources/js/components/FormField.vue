@@ -84,6 +84,8 @@ export default {
 
             const errors = {}
 
+            console.log(this.errors)
+
             errors[valueKey] = [
                 ...(this.errors && typeof this.errors.has === 'function' && this.errors.has(valueKey) ? this.errors.get(valueKey) : []),
                 ...(this.errors && typeof this.errors.has === 'function' && this.errors.has(imageKey) ? this.errors.get(imageKey) : [])
