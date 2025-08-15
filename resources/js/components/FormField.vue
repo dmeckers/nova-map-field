@@ -179,9 +179,9 @@ export default {
     },
 
     fill: function (e) {
-      this.currentField.visible &&
+      this.currentField().visible &&
         (e.append(
-          this.currentField.attribute + "[value]",
+          this.currentField().attribute + "[value]",
           this.fieldValue || ""
         ),
         e.append(this.currentField.attribute + "[image]", this.image || ""));
