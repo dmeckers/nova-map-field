@@ -19,9 +19,9 @@ class MapPointField extends Field
 
     public $component = 'nova-map-field';
 
-    private string      $mapType              = 'POINT';
-    private ?PointValue $defaultValue         = null;
-    protected string    $validationRulesClass = PointRequiredRule::class;
+    private string $mapType = 'POINT';
+    private ?PointValue $defaultValue = null;
+    protected string $validationRulesClass = PointRequiredRule::class;
 
     public function markerIcon(int $icon): self
     {
@@ -55,13 +55,12 @@ class MapPointField extends Field
 
         if (is_null($resource->{$attribute}) and is_null($resource->id) and $this->defaultValue) {
             $this->value = json_encode([
-                'latitude'  => $this->defaultValue->getLatitude(),
+                'latitude' => $this->defaultValue->getLatitude(),
                 'longitude' => $this->defaultValue->getLongitude()
             ]);
-        }
-        else {
+        } else {
             $this->value = json_encode([
-                'latitude'  => $resource->{$attribute}?->latitude,
+                'latitude' => $resource->{$attribute}?->latitude,
                 'longitude' => $resource->{$attribute}?->longitude
             ]);
         }
@@ -74,5 +73,10 @@ class MapPointField extends Field
         }
 
         return $this;
+    }
+
+    public function fill(NovaRequest $request, Model $model)
+    {
+        dd('test');
     }
 }
