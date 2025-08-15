@@ -58,7 +58,27 @@ import PolygonFormField from "./form-fields/PolygonFormField";
 import MultiPolygonFormField from "./form-fields/MultiPolygonFormField";
 import MapExport from "./other/MapExport";
 
+// Simple Errors class to mimic Nova's Errors functionality
+class Errors {
+  constructor(errors = {}) {
+    this.errors = errors;
+  }
+
+  has(field) {
+    return this.errors.hasOwnProperty(field) && this.errors[field].length > 0;
+  }
+
+  get(field) {
+    return this.errors.hasOwnProperty(field) ? this.errors[field] : [];
+  }
+
+  all() {
+    return this.errors;
+  }
+}
+
 export default {
+  mixins: [Nova.mixins.FormField],
   props: ["resourceName", "resourceId", "field", "errors"],
   components: {
     MapExport,
@@ -78,6 +98,15 @@ export default {
     },
   },
   computed: {
+    value: {
+      get() {
+        return this.fieldValue;
+      },
+      set(value) {
+        this.fieldValue = value;
+      },
+    },
+
     currentField() {
       return this.field;
     },
@@ -91,7 +120,7 @@ export default {
 
       console.log(this.errors);
 
-      const errorKeys = Object.keys(this.errors);
+      const errorKeys = Object.keys(this.errors || {});
 
       errors[valueKey] = [
         ...(!errorKeys.length
@@ -106,7 +135,7 @@ export default {
           : []),
       ];
 
-      return errors;
+      return new Errors(errors);
     },
 
     mapType() {
@@ -114,11 +143,17 @@ export default {
     },
 
     hasLocationError() {
-      return (
-        this.errors &&
-        Object.keys(this.errors).length > 0 &&
-        this.errors[this.currentField.attribute] !== undefined
-      );
+      if (!this.errors) return false;
+
+      // Handle both Errors object and plain object
+      if (typeof this.errors.has === "function") {
+        return this.errors.has(this.currentField.attribute);
+      } else {
+        return (
+          Object.keys(this.errors).length > 0 &&
+          this.errors[this.currentField.attribute] !== undefined
+        );
+      }
     },
 
     mapErrorClasses() {
@@ -144,17 +179,13 @@ export default {
       this.$emit("field-changed");
     },
 
-    fill(formData) {
-      if (this.currentField.visible) {
-        formData.append(
+    fill: function (e) {
+      this.currentField.visible &&
+        (e.append(
           this.currentField.attribute + "[value]",
           this.fieldValue || ""
-        );
-        formData.append(
-          this.currentField.attribute + "[image]",
-          this.image || ""
-        );
-      }
+        ),
+        e.append(this.currentField.attribute + "[image]", this.image || ""));
     },
   },
 };
