@@ -95,6 +95,10 @@ export default {
     fieldValue(value) {
       this.emitFieldValueChange(this.currentField.attribute, value);
     },
+    image(value) {
+      // Also emit when image changes
+      this.emitFieldValueChange(this.currentField.attribute, this.fieldValue);
+    },
   },
   computed: {
     value: {
@@ -176,9 +180,21 @@ export default {
   methods: {
     emitFieldValueChange(attribute, value) {
       this.$emit("field-changed");
+      // Ensure Vue knows about the data changes
+      this.$nextTick(() => {
+        // Force reactivity update
+        this.$forceUpdate();
+      });
     },
 
     fill(formData) {
+      console.log('FormField.fill() called!', {
+        visible: this.currentField.visible,
+        attribute: this.currentField.attribute,
+        fieldValue: this.fieldValue,
+        image: this.image
+      });
+      
       if (this.currentField.visible) {
         formData.append(
           this.currentField.attribute + "[value]",
