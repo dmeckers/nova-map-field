@@ -78,6 +78,7 @@ class Errors {
 }
 
 export default {
+  name: 'NovaMapFormField',
   props: ["resourceName", "resourceId", "field", "errors"],
   components: {
     MapExport,
@@ -85,6 +86,7 @@ export default {
     MultiPolygonFormField,
     PointFormField,
   },
+  expose: ["fill"], // Expose the fill method
   data() {
     return {
       fieldValue: "",
@@ -176,6 +178,22 @@ export default {
         this.currentField.helpText && this.currentField.helpText.length > 0
       );
     },
+  },
+  created() {
+    // Set fill method early in lifecycle
+    console.log('FormField created');
+  },
+  mounted() {
+    // Ensure the fill method is available on the component instance
+    this.fill = this.fill.bind(this);
+    
+    // Also add it to the Vue instance for Nova to find
+    this.$el.fill = this.fill;
+    
+    // Debug: Check if the method is available
+    console.log('FormField mounted, fill method available:', typeof this.fill);
+    console.log('Component instance:', this);
+    console.log('Component methods:', Object.getOwnPropertyNames(this).filter(name => typeof this[name] === 'function'));
   },
   methods: {
     emitFieldValueChange(attribute, value) {
