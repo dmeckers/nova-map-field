@@ -75,7 +75,7 @@ class MapPointField extends Field
         return $this;
     }
 
-    public function fill(NovaRequest $request, Model $model)
+    public function fill(NovaRequest $request, mixed $model)
     {
         dd('test');
     }
