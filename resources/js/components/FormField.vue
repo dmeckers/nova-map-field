@@ -86,10 +86,18 @@ export default {
 
             console.log(this.errors)
 
+            const errorKeys = Object.keys(this.errors);
+
             errors[valueKey] = [
-                ...(this.errors && typeof this.errors.has === 'function' && this.errors.has(valueKey) ? this.errors.get(valueKey) : []),
-                ...(this.errors && typeof this.errors.has === 'function' && this.errors.has(imageKey) ? this.errors.get(imageKey) : [])
-            ]
+                ...(!errorKeys.length ? [] : this.errors[valueKey] ? this.errors[valueKey] : []),
+                ...(!errorKeys.length ? [] : this.errors[imageKey] ? this.errors[imageKey] : []),
+            ];
+            
+            
+            // [
+            //     ...(this.errors && typeof this.errors.has === 'function' && this.errors.has(valueKey) ? this.errors.get(valueKey) : []),
+            //     ...(this.errors && typeof this.errors.has === 'function' && this.errors.has(imageKey) ? this.errors.get(imageKey) : [])
+            // ]
 
             return errors
         },
