@@ -4,13 +4,11 @@
 
         <template v-else>
             <div class="map-location-information">
-                BBB
                 <location-svg-icon />
                 <span>{{ __('Latitude') }}: {{ latitude }}</span>
             </div>
 
             <div class="map-location-information">
-                AAAA
                 <location-svg-icon />
                 <span>{{ __('Longitude') }}: {{ longitude }}</span>
             </div>
