@@ -165,6 +165,29 @@ export default {
       this.setDirty();
       this.fieldValue = JSON.stringify(data);
     },
+
+    fill(formData) {
+      console.log("FormField.fill() called!", {
+        visible: this.currentField.visible,
+        attribute: this.currentField.attribute,
+        fieldValue: this.fieldValue,
+        image: this.image,
+      });
+
+      if (this.currentField.visible) {
+        formData.append(
+          this.currentField.attribute + "[value]",
+          this.fieldValue || ""
+        );
+
+        if (this.image) {
+          formData.append(
+            this.currentField.attribute + "[image]",
+            this.image || ""
+          );
+        }
+      }
+    },
   },
 };
 </script>

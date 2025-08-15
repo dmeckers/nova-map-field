@@ -188,13 +188,13 @@ export default {
     },
 
     fill(formData) {
-      console.log('FormField.fill() called!', {
+      console.log("FormField.fill() called!", {
         visible: this.currentField.visible,
         attribute: this.currentField.attribute,
         fieldValue: this.fieldValue,
-        image: this.image
+        image: this.image,
       });
-      
+
       if (this.currentField.visible) {
         formData.append(
           this.currentField.attribute + "[value]",
