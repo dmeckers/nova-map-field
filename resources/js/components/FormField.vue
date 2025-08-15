@@ -184,16 +184,40 @@ export default {
     console.log('FormField created');
   },
   mounted() {
-    // Ensure the fill method is available on the component instance
-    this.fill = this.fill.bind(this);
-    
-    // Also add it to the Vue instance for Nova to find
-    this.$el.fill = this.fill;
+    // The key insight: Nova calls field.fill(), not component.fill()
+    // So we need to add the fill method to the FIELD OBJECT itself
+    if (this.currentField) {
+      // Bind our fill method to the field object
+      this.currentField.fill = (formData) => {
+        console.log("Field.fill() called via field object!", {
+          visible: this.currentField.visible,
+          attribute: this.currentField.attribute,
+          fieldValue: this.fieldValue,
+          image: this.image,
+        });
+
+        if (this.currentField.visible) {
+          formData.append(
+            this.currentField.attribute + "[value]",
+            this.fieldValue || ""
+          );
+
+          if (this.image) {
+            formData.append(
+              this.currentField.attribute + "[image]",
+              this.image || ""
+            );
+          }
+        }
+      };
+      
+      console.log('FormField mounted, added fill method to field object');
+      console.log('Field object now has fill method:', typeof this.currentField.fill);
+    }
     
     // Debug: Check if the method is available
-    console.log('FormField mounted, fill method available:', typeof this.fill);
-    console.log('Component instance:', this);
-    console.log('Component methods:', Object.getOwnPropertyNames(this).filter(name => typeof this[name] === 'function'));
+    console.log('FormField mounted, component fill method available:', typeof this.fill);
+    console.log('Current field object:', this.currentField);
   },
   methods: {
     emitFieldValueChange(attribute, value) {
@@ -205,8 +229,9 @@ export default {
       });
     },
 
+    // Keep this as a backup method on the component itself
     fill(formData) {
-      console.log("FormField.fill() called!", {
+      console.log("Component.fill() called as backup!", {
         visible: this.currentField.visible,
         attribute: this.currentField.attribute,
         fieldValue: this.fieldValue,
@@ -227,6 +252,13 @@ export default {
         }
       }
     },
+  },
+  
+  beforeUnmount() {
+    // Clean up - remove the fill method from the field object
+    if (this.currentField && this.currentField.fill) {
+      delete this.currentField.fill;
+    }
   },
 };
 </script>
