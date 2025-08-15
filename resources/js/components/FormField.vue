@@ -78,7 +78,6 @@ class Errors {
 }
 
 export default {
-  mixins: [Nova.mixins.FormField],
   props: ["resourceName", "resourceId", "field", "errors"],
   components: {
     MapExport,
